@@ -31,6 +31,8 @@
     <ClCompile Include="src\Components\render_component.cc">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="src\Components\game_components.cc" />
+    <ClCompile Include="src\Framework\game_entities.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Levels\Level 1.h">
@@ -51,5 +53,9 @@
     <ClInclude Include="src\Framework\event.hh">
       <Filter>Framework</Filter>
     </ClInclude>
+    <ClInclude Include="src\Components\game_components.hh" />
+    <ClInclude Include="src\Framework\game_events.hh" />
+    <ClInclude Include="src\Framework\event_handlers.hh" />
+    <ClInclude Include="src\Framework\game_entities.hh" />
   </ItemGroup>
 </Project>

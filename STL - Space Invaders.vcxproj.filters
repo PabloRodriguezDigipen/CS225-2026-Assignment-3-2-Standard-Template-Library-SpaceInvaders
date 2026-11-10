@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Game States">
+      <UniqueIdentifier>{cd98f059-4bb5-4f79-ab91-322a7f693bcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework">
+      <UniqueIdentifier>{559e3d28-0406-4b99-97e4-234f51084776}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components">
+      <UniqueIdentifier>{bd866ff4-c475-4924-9412-f3748496ffa0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{6f1c2a4e-9b3d-4e57-8a21-3c5d7e9f0b12}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Levels\Level 1.cpp">
+      <Filter>Game States</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Framework\entity.cc">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Framework\component.cc">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Components\position_component.cc">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Components\render_component.cc">
+      <Filter>Components</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Levels\Level 1.h">
+      <Filter>Game States</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Framework\entity.hh">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Framework\component.hh">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Components\position_component.hh">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Components\render_component.hh">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Framework\event.hh">
+      <Filter>Framework</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

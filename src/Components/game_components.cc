@@ -10,10 +10,10 @@ void PlayerComponent::OnMove(PlayerMoveEvent* event) {
 	position->setPosition(position->getX() + event->mDistance, position->getY());
 
 	//dont surpass the limits
-	if (position->getX() > 250)
-		position->setPosition(250, position->getY());
-	else if (position->getX() < -250)
-		position->setPosition(-250, position->getY());
+	if (position->getX() > 350)
+		position->setPosition(350, position->getY());
+	else if (position->getX() < -350)
+		position->setPosition(-350, position->getY());
 }
 
 void PlayerComponent::OnHit(PlayerHitEvent* event) {
@@ -21,5 +21,21 @@ void PlayerComponent::OnHit(PlayerHitEvent* event) {
 }
 
 void PlayerComponent::OnReset(Reset* event) {
+
+}
+
+BulletComponent::BulletComponent(bool isEnemy) : Component("Bullet") {
+	enemy = isEnemy;
+}
+
+bool BulletComponent::IsEnemy() {
+	return enemy;
+}
+
+int BulletComponent::Speed() {
+	return speed;
+}
+
+void BulletComponent::OnReset(Reset* event) {
 
 }

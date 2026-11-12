@@ -15,3 +15,19 @@ public:
     void OnHit(PlayerHitEvent* event);
     void OnReset(Reset* event);
 };
+
+class BulletComponent : public Component {
+protected:
+    bool enemy = false;
+    int speed = 10;
+
+public:
+    //default constructor
+    BulletComponent(bool isEnemy);
+
+    bool IsEnemy();
+    int Speed();
+
+    //functions to handle events
+    void OnReset(Reset* event);
+};

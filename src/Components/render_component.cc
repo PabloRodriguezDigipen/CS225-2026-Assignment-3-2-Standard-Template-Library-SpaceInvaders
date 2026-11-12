@@ -6,15 +6,16 @@
 #include "render_component.hh"
 #include "position_component.hh"
 
-RenderComponent::RenderComponent() : Component("Render")
+RenderComponent::RenderComponent(int w, int h) : Component("Render")
 {
-
+	width = w;
+	height = h;
 }
 
 void RenderComponent::Draw()
 {
 	PositionComponent* position = static_cast<PositionComponent*>(mOwner->getComponent("Position"));
-	AEGfxCircle(position->getX(), position->getY(), 50, AEGfxColor(255, 0, 0), 20);
+	AEGfxRect(position->getX(), position->getY(), 0,  width, height, AEGfxColor(255, 0, 0));
 }
 
 RenderComponent::~RenderComponent() {

@@ -11,6 +11,8 @@ protected:
     // Components attached to the class
     std::vector<Component*> components;
 public:
+    bool active = false;
+
     // Get a component by their name
     Component* getComponent(const char* name);
     

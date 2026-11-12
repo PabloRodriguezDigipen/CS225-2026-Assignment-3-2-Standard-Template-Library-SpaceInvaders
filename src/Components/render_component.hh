@@ -7,8 +7,9 @@
 /// </summary>
 class RenderComponent : public Component
 {
+    int width = 0, height = 0;
 public:
-    RenderComponent();
+    RenderComponent(int w, int h);
     
     virtual void Draw();
     

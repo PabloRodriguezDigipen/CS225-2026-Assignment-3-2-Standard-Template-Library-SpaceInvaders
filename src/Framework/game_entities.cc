@@ -26,3 +26,17 @@ void Bullet::Update() {
 void Bullet::Draw() {
 
 }
+
+void Enemy::Update() {
+	EnemyComponent* enemyComp = static_cast<EnemyComponent*>(getComponent("Enemy"));
+	PositionComponent* posComp = static_cast<PositionComponent*>(getComponent("Position"));
+
+	if (enemyComp->Right())
+		posComp->setPosition(posComp->getX() + enemyComp->Speed(), posComp->getY());
+	else
+		posComp->setPosition(posComp->getX() - enemyComp->Speed(), posComp->getY());
+}
+
+void Enemy::Draw() {
+
+}

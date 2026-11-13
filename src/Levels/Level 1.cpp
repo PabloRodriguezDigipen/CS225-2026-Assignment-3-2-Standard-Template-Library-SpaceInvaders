@@ -10,13 +10,19 @@
 #include "../Framework/game_events.hh"
 #include <algorithm>
 #include <functional>
+#include <cstdlib>
 
 int mode = 0;
 
 Player* player;
 std::vector<Bullet*> playerBullets;
 
+std::vector<Enemy*> enemies;
+std::vector<Bullet*> enemyBullets;
+
 InputEventManager* inputManager;
+EnemyEventManager* enemyManager;
+ResetEventManager* resetManager;
 
 bool ShowFrameworkMenu();
 
@@ -31,7 +37,21 @@ void Level_1_Load()
         playerBullets.push_back(bullet);
     }
 
+    for (int i = 0; i < 10; i++) {
+        Bullet* bullet = new Bullet;
+        bullet->active = false;
+        enemyBullets.push_back(bullet);
+    }
+
+    for (int i = 0; i < 30; i++) {
+        Enemy* enemy = new Enemy;
+        enemy->active = false;
+        enemies.push_back(enemy);
+    }
+
     inputManager = new InputEventManager;
+    enemyManager = new EnemyEventManager;
+    resetManager = new ResetEventManager;
 }
 
 void Level_1_Init()
@@ -44,8 +64,10 @@ void Level_1_Init()
     PlayerComponent* PlayerComp = new PlayerComponent();
     player->attach(PlayerComp);
 
+    player->active = true;
+
     inputManager->registerEventHandler(new EventHandler<PlayerComponent, PlayerMoveEvent>(PlayerComp, &PlayerComponent::OnMove));
-    inputManager->registerEventHandler(new EventHandler<PlayerComponent, Reset>(PlayerComp, &PlayerComponent::OnReset));
+    resetManager->registerEventHandler(new EventHandler<PlayerComponent, Reset>(PlayerComp, &PlayerComponent::OnReset));
 
 
     for_each(playerBullets.begin(), playerBullets.end(), [](Bullet* current)
@@ -57,8 +79,49 @@ void Level_1_Init()
             BulletComponent* BulletComp = new BulletComponent(false);
             current->attach(BulletComp);
 
-            inputManager->registerEventHandler(new EventHandler<BulletComponent, Reset>(BulletComp, &BulletComponent::OnReset));
+            resetManager->registerEventHandler(new EventHandler<BulletComponent, Reset>(BulletComp, &BulletComponent::OnReset));
         });
+
+    for_each(enemyBullets.begin(), enemyBullets.end(), [](Bullet* current)
+        {
+            RenderComponent* BulletRender = new RenderComponent(10, 20);
+            current->attach(BulletRender);
+            PositionComponent* BulletPosition = new PositionComponent(0, -500);
+            current->attach(BulletPosition);
+            BulletComponent* BulletComp = new BulletComponent(true);
+            current->attach(BulletComp);
+
+            resetManager->registerEventHandler(new EventHandler<BulletComponent, Reset>(BulletComp, &BulletComponent::OnReset));
+        });
+
+    for_each(enemies.begin(), enemies.end(), [](Enemy* current)
+        {
+            RenderComponent* EnemyRender = new RenderComponent(40, 15);
+            current->attach(EnemyRender);
+            PositionComponent* EnenmyPosition = new PositionComponent(700, 0);
+            current->attach(EnenmyPosition);
+            EnemyComponent* EnemyComp = new EnemyComponent();
+            current->attach(EnemyComp);
+
+            current->active = true;
+
+            resetManager->registerEventHandler(new EventHandler<EnemyComponent, Reset>(EnemyComp, &EnemyComponent::OnReset));
+            enemyManager->registerEventHandler(new EventHandler<EnemyComponent, EnemyDirectionEvent>(EnemyComp, &EnemyComponent::OnDirection));
+        });
+
+    int enemiesPerRow = 6, count = 0;
+    int X = 0, Y = 0;
+    for (int i = 0; i < enemies.size(); i++) {
+        PositionComponent* position = static_cast<PositionComponent*>(enemies.at(i)->getComponent("Position"));
+        position->setPosition(X, Y);
+        X += 50;
+        count++;
+        if (count == enemiesPerRow){
+            Y += 40;
+            X = 0;
+            count = 0;
+        }
+    }
 }
 
 void Level_1_Update()
@@ -73,6 +136,49 @@ void Level_1_Update()
                 current->Update();
             }
         });
+
+    for_each(enemyBullets.begin(), enemyBullets.end(), [](Bullet* current)
+        {
+            if (current->active) {
+                current->Update();
+            }
+        });
+
+
+    bool changeDirection = false;
+    for_each(enemies.begin(), enemies.end(), [&changeDirection](Enemy* current)
+        {
+            if (current->active) {
+                current->Update();
+
+                PositionComponent* posComp = static_cast<PositionComponent*>(current->getComponent("Position"));
+                if (posComp->getX() < -350 || posComp->getX() > 350) {
+                    changeDirection = true;
+                }
+                int shoot = rand();
+
+                if (shoot < 18) {
+                    AEVec2 bulletPos = AEVec2(posComp->getX(), posComp->getY() - 20);
+
+                    bool found = false;
+                    for_each(enemyBullets.begin(), enemyBullets.end(), [&found, &bulletPos](Bullet* current)
+                        {
+                            if (!found && !current->active) {
+                                PositionComponent* bulletPosition = static_cast<PositionComponent*>(current->getComponent("Position"));
+                                bulletPosition->setPosition(bulletPos.x, bulletPos.y);
+                                current->active = true;
+
+                                found = true;
+                            }
+                        });
+                }
+            }
+        });
+
+    if (changeDirection) {
+        EnemyDirectionEvent event;
+        enemyManager->notifyEvent(&event);
+    }
 }
 
 void Level_1_Render()
@@ -85,6 +191,22 @@ void Level_1_Render()
     PlayerRender->Draw();
 
     for_each(playerBullets.begin(), playerBullets.end(), [](Bullet* current)
+        {
+            if (current->active) {
+                RenderComponent* render = static_cast<RenderComponent*>(current->getComponent("Render"));
+                render->Draw();
+            }
+        });
+
+    for_each(enemyBullets.begin(), enemyBullets.end(), [](Bullet* current)
+        {
+            if (current->active) {
+                RenderComponent* render = static_cast<RenderComponent*>(current->getComponent("Render"));
+                render->Draw();
+            }
+        });
+
+    for_each(enemies.begin(), enemies.end(), [](Enemy* current)
         {
             if (current->active) {
                 RenderComponent* render = static_cast<RenderComponent*>(current->getComponent("Render"));

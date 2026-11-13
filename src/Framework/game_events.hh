@@ -8,6 +8,16 @@ public:
     void update() override {}
 };
 
+class EnemyEventManager : public EventManager {
+public:
+    void update() override {}
+};
+
+class ResetEventManager : public EventManager {
+public:
+    void update() override {}
+};
+
 //event to move player
 class PlayerMoveEvent : public Event {
 public:
@@ -16,9 +26,7 @@ public:
 
 class PlayerHitEvent : public Event {};
 
-class EnemyHitEvent : public Event {};
-
-class EnemyDyrectionEvent : public Event {};
+class EnemyDirectionEvent : public Event {};
 
 //event for game reset
 class Reset : public Event {};

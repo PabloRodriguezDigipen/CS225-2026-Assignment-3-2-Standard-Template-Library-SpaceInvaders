@@ -39,3 +39,21 @@ int BulletComponent::Speed() {
 void BulletComponent::OnReset(Reset* event) {
 
 }
+
+EnemyComponent::EnemyComponent() : Component("Enemy") {}
+
+bool EnemyComponent::Right() {
+	return toRight;
+}
+
+int EnemyComponent::Speed() {
+	return speed;
+}
+
+void EnemyComponent::OnDirection(EnemyDirectionEvent* event) {
+	toRight = !toRight;
+}
+
+void EnemyComponent::OnReset(Reset* event) {
+
+}

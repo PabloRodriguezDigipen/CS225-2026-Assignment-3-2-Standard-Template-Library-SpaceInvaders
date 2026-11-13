@@ -19,7 +19,7 @@ public:
 class BulletComponent : public Component {
 protected:
     bool enemy = false;
-    int speed = 10;
+    int speed = 5;
 
 public:
     //default constructor
@@ -29,5 +29,23 @@ public:
     int Speed();
 
     //functions to handle events
+    void OnReset(Reset* event);
+};
+
+//enemy
+class EnemyComponent : public Component {
+protected:
+    bool toRight = true;
+    int speed = 1;
+
+public:
+    //default constructor
+    EnemyComponent();
+
+    bool Right();
+    int Speed();
+
+    //functions to handle events
+    void OnDirection(EnemyDirectionEvent* event);
     void OnReset(Reset* event);
 };

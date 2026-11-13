@@ -12,3 +12,9 @@ public:
 	void Update() override;
 	void Draw() override;
 };
+
+class Enemy : public Entity {
+public:
+	void Update() override;
+	void Draw() override;
+};

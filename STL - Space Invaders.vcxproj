@@ -22,6 +22,7 @@
     <ClCompile Include="src\Components\game_components.cc" />
     <ClCompile Include="src\Components\position_component.cc" />
     <ClCompile Include="src\Components\render_component.cc" />
+    <ClCompile Include="src\Framework\collision_manager.cc" />
     <ClCompile Include="src\Framework\component.cc" />
     <ClCompile Include="src\Framework\entity.cc" />
     <ClCompile Include="src\Framework\game_entities.cc" />
@@ -30,6 +31,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Components\game_components.hh" />
+    <ClInclude Include="src\Framework\collision_manager.hh" />
     <ClInclude Include="src\Framework\event.hh" />
     <ClInclude Include="src\Components\position_component.hh" />
     <ClInclude Include="src\Components\render_component.hh" />

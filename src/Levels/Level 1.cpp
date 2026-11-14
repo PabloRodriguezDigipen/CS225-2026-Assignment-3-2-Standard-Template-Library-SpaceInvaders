@@ -8,6 +8,7 @@
 #include "../Components/position_component.hh"
 #include "../Components/game_components.hh"
 #include "../Framework/game_events.hh"
+#include "../Framework/collision_manager.hh"
 #include <algorithm>
 #include <functional>
 #include <cstdlib>
@@ -22,7 +23,7 @@ std::vector<Bullet*> enemyBullets;
 
 InputEventManager* inputManager;
 EnemyEventManager* enemyManager;
-ResetEventManager* resetManager;
+CollisionManager* collisionManager;
 
 bool ShowFrameworkMenu();
 
@@ -51,7 +52,7 @@ void Level_1_Load()
 
     inputManager = new InputEventManager;
     enemyManager = new EnemyEventManager;
-    resetManager = new ResetEventManager;
+    collisionManager = new CollisionManager(player, playerBullets, enemies, enemyBullets);
 }
 
 void Level_1_Init()
@@ -63,11 +64,13 @@ void Level_1_Init()
     player->attach(PlayerPosition);
     PlayerComponent* PlayerComp = new PlayerComponent();
     player->attach(PlayerComp);
+    CollisionComponent* PlayerColider = new CollisionComponent(50, 20);
+    player->attach(PlayerColider);
 
     player->active = true;
 
     inputManager->registerEventHandler(new EventHandler<PlayerComponent, PlayerMoveEvent>(PlayerComp, &PlayerComponent::OnMove));
-    resetManager->registerEventHandler(new EventHandler<PlayerComponent, Reset>(PlayerComp, &PlayerComponent::OnReset));
+    collisionManager->registerEventHandler(new EventHandler<PlayerComponent, Reset>(PlayerComp, &PlayerComponent::OnReset));
 
 
     for_each(playerBullets.begin(), playerBullets.end(), [](Bullet* current)
@@ -79,7 +82,7 @@ void Level_1_Init()
             BulletComponent* BulletComp = new BulletComponent(false);
             current->attach(BulletComp);
 
-            resetManager->registerEventHandler(new EventHandler<BulletComponent, Reset>(BulletComp, &BulletComponent::OnReset));
+            collisionManager->registerEventHandler(new EventHandler<BulletComponent, Reset>(BulletComp, &BulletComponent::OnReset));
         });
 
     for_each(enemyBullets.begin(), enemyBullets.end(), [](Bullet* current)
@@ -91,7 +94,7 @@ void Level_1_Init()
             BulletComponent* BulletComp = new BulletComponent(true);
             current->attach(BulletComp);
 
-            resetManager->registerEventHandler(new EventHandler<BulletComponent, Reset>(BulletComp, &BulletComponent::OnReset));
+            collisionManager->registerEventHandler(new EventHandler<BulletComponent, Reset>(BulletComp, &BulletComponent::OnReset));
         });
 
     for_each(enemies.begin(), enemies.end(), [](Enemy* current)
@@ -102,10 +105,12 @@ void Level_1_Init()
             current->attach(EnenmyPosition);
             EnemyComponent* EnemyComp = new EnemyComponent();
             current->attach(EnemyComp);
+            CollisionComponent* EnemyColider = new CollisionComponent(40, 15);
+            current->attach(EnemyColider);
 
             current->active = true;
 
-            resetManager->registerEventHandler(new EventHandler<EnemyComponent, Reset>(EnemyComp, &EnemyComponent::OnReset));
+            collisionManager->registerEventHandler(new EventHandler<EnemyComponent, Reset>(EnemyComp, &EnemyComponent::OnReset));
             enemyManager->registerEventHandler(new EventHandler<EnemyComponent, EnemyDirectionEvent>(EnemyComp, &EnemyComponent::OnDirection));
         });
 
@@ -179,6 +184,8 @@ void Level_1_Update()
         EnemyDirectionEvent event;
         enemyManager->notifyEvent(&event);
     }
+
+    collisionManager->update();
 }
 
 void Level_1_Render()
@@ -217,11 +224,49 @@ void Level_1_Render()
 
 void Level_1_Free()
 {
+    player = new Player;
 
+    for_each(playerBullets.begin(), playerBullets.end(), [](Bullet* current) {
+        current = new Bullet;
+        });
+    for_each(enemyBullets.begin(), enemyBullets.end(), [](Bullet* current) {
+        current = new Bullet;
+        });
+    for_each(enemies.begin(), enemies.end(), [](Enemy* current) {
+        current = new Enemy;
+        });
+
+    inputManager = new InputEventManager;
+    enemyManager = new EnemyEventManager;
+    collisionManager = new CollisionManager(player, playerBullets, enemies, enemyBullets);
 }
 
 void Level_1_Unload()
 {
+    //deleted managers
+    delete collisionManager;
+    delete inputManager;
+    delete enemyManager;
+    collisionManager = nullptr;
+    inputManager = nullptr;
+    enemyManager = nullptr;
+
+    //deleted objects
+    delete player;
+    player = nullptr;
+
+    for_each(playerBullets.begin(), playerBullets.end(), [](Bullet* current) {
+        delete current;
+        current = nullptr;
+        });
+    for_each(enemyBullets.begin(), enemyBullets.end(), [](Bullet* current) {
+        delete current;
+        current = nullptr;
+        });
+    for_each(enemies.begin(), enemies.end(), [](Enemy* current) {
+        delete current;
+        current = nullptr;
+        });
 }
 
 void KeyboardInput()

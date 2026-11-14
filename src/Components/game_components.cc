@@ -1,5 +1,19 @@
 #include "game_components.hh"
 
+//default constructor
+CollisionComponent::CollisionComponent(int width, int height) : Component("Collision") {
+	mWidth = width;
+	mHeight = height;
+}
+
+//getters
+int CollisionComponent::getWidth() const {
+	return mWidth;
+}
+int CollisionComponent::getHeight() const {
+	return mHeight;
+}
+
 PlayerComponent::PlayerComponent() : Component("Player") {}
 
 void PlayerComponent::OnMove(PlayerMoveEvent* event) {

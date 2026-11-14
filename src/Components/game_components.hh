@@ -4,6 +4,22 @@
 #include "position_component.hh"
 #include "../Framework/entity.hh"
 
+//component to check collisions
+class CollisionComponent : public Component {
+protected:
+    //data for collision (position will be taken from its own component)
+    int mWidth;
+    int mHeight;
+public:
+    //default constructor
+    CollisionComponent(int width, int height);
+    //getters
+    int getWidth() const;
+    int getHeight() const;
+    //default destructor
+    ~CollisionComponent() = default;
+};
+
 //player
 class PlayerComponent : public Component {
 protected:

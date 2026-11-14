@@ -13,11 +13,6 @@ public:
     void update() override {}
 };
 
-class ResetEventManager : public EventManager {
-public:
-    void update() override {}
-};
-
 //event to move player
 class PlayerMoveEvent : public Event {
 public:
